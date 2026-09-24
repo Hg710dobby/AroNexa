@@ -423,7 +423,7 @@ function Landing() {
           <Link to="/" style={styles.logo}>
             <div style={styles.logoIcon}>🏥</div>
             <span style={styles.logoText}>
-              Health<span style={styles.logoSpan}>Mitra</span>
+              AroNexa
             </span>
           </Link>
           <div style={styles.navRight}>
@@ -449,7 +449,7 @@ function Landing() {
             <span style={styles.gradientText}>Our Priority</span>
           </h1>
           <p style={styles.heroDesc}>
-            HealthMitra bridges the rural healthcare gap with AI-powered symptom checking,
+            AroNexa bridges the rural healthcare gap with AI-powered symptom checking,
             multilingual support, and instant hospital locator. Healthcare for everyone, anywhere.
           </p>
           <div style={styles.ctaRow}>
@@ -538,7 +538,7 @@ function Landing() {
       <footer style={styles.footer}>
         <div style={styles.footerLogo}>
           <span style={{ fontSize: '28px' }}>🏥</span>
-          <p style={styles.footerTitle}>HealthMitra</p>
+          <p style={styles.footerTitle}>AroNexa</p>
         </div>
         <p style={styles.footerDesc}>AI-Powered Rural Health Assistant | Cloud Computing Project</p>
         <p style={styles.footerDisclaimer}>⚠️ Not for medical diagnosis. Always consult a qualified doctor.</p>

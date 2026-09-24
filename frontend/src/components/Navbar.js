@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const S = {
@@ -136,6 +136,13 @@ function Navbar() {
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth < 900);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
   const isAdmin = user?.role === 'admin';
   const navLinks = isAdmin ? adminLinks : patientLinks;
@@ -155,12 +162,12 @@ function Navbar() {
         <Link to={isAdmin ? '/admin' : '/dashboard'} style={S.logo}>
           <div style={S.logoIcon}>🏥</div>
           <span style={S.logoText}>
-            Health<span style={{ color: '#059669' }}>Mitra</span>
+            AroNexa
           </span>
         </Link>
 
         {/* Nav Links - Desktop */}
-        <div style={{ ...S.navLinks, display: window.innerWidth < 900 ? 'none' : 'flex' }}>
+        <div style={{ ...S.navLinks,display: isMobile ? 'none' : 'flex'  }}>
           {navLinks.map(link => (
             <Link
               key={link.path}
@@ -197,6 +204,14 @@ function Navbar() {
           <button onClick={handleLogout} style={S.logoutBtn}>
             ↩ Logout
           </button>
+          {isMobile && (
+  <button
+    onClick={() => setMobileOpen(!mobileOpen)}
+    style={S.logoutBtn}
+  >
+    ☰
+  </button>
+)}
         </div>
       </div>
 

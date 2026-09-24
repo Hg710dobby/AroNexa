@@ -253,7 +253,7 @@ function Register() {
         <div style={S.logoSection}>
           <div style={S.logoIcon}>🏥</div>
           <h1 style={S.logoTitle}>Join Health<span style={{ color: '#059669' }}>Mitra</span></h1>
-          <p style={S.logoSub}>Create your free health account</p>
+          <p style={S.logoSub}>Create your AI-assisted healthcare account</p>
         </div>
 
         {/* Role Selection */}
@@ -280,7 +280,7 @@ function Register() {
                 ASHA Worker
               </p>
               <p style={{ color: '#94a3b8', fontSize: '11px', margin: 0 }}>
-                Manage patients, view trends, village health data
+                Patient records, community health insights & healthcare tools
               </p>
             </div>
           </div>
@@ -406,7 +406,7 @@ function Register() {
                 <div style={S.btnRow}>
                   <button type="button" onClick={() => setStep(1)} style={S.backBtn}>← Back</button>
                   <button type="submit" disabled={loading} style={{ ...S.nextBtn(isAdmin), opacity: loading ? 0.7 : 1 }}>
-                    {loading ? '⏳ Creating Account...' : (isAdmin ? '👩‍⚕️ Register as ASHA Worker' : '🚀 Create Account')}
+                    {loading ? '⏳ Creating Account...' : (isAdmin ? '👩‍⚕️ Create ASHA Worker Account' : '🚀 Create Patient Account')}
                   </button>
                 </div>
               </form>
@@ -418,7 +418,7 @@ function Register() {
             </div>
           </div>
         </div>
-        <p style={S.disclaimer}>⚠️ Not for medical diagnosis. Always consult a doctor.</p>
+        <p style={S.disclaimer}>⚠️ AI-assisted health information only. Always consult a qualified healthcare professional.</p>
       </div>
     </div>
   );

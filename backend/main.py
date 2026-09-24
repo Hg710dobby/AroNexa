@@ -14,7 +14,7 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     """Application startup and shutdown events"""
     # Startup
-    print("Starting HealthMitra Backend...")
+    print("Starting AroNexa Backend...")
     await connect_to_database()
 
     # Diagnostics — show config status at startup
@@ -36,11 +36,11 @@ async def lifespan(app: FastAPI):
     yield
     # Shutdown
     await close_database_connection()
-    print("HealthMitra Backend stopped.")
+    print("AroNexa Backend stopped.")
 
 
 app = FastAPI(
-    title="HealthMitra API",
+    title="AroNexa API",
     description="AI-Powered Rural Health Assistant - Backend API",
     version="1.0.0",
     lifespan=lifespan
@@ -68,7 +68,7 @@ app.include_router(admin.router, prefix="/api")
 @app.get("/")
 async def root():
     return {
-        "message": "🏥 Welcome to HealthMitra API",
+        "message": "🏥 Welcome to AroNexa API",
         "description": "AI-Powered Rural Health Assistant",
         "version": "1.0.0",
         "docs": "/docs",
@@ -81,7 +81,7 @@ async def health_check():
     groq_key = os.getenv("GROQ_API_KEY", "")
     return {
         "status": "healthy",
-        "service": "HealthMitra Backend",
+        "service": "AroNexa Backend",
         "groq_configured": bool(groq_key and len(groq_key) > 10),
         "features": {
             "multilingual": bool(groq_key),

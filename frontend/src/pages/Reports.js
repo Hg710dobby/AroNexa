@@ -148,7 +148,7 @@ function Reports() {
         <div style={S.headerIcon}>📄</div>
         <div>
           <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1e293b', margin: 0 }}>Medical Reports</h1>
-          <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>Upload and get AI-powered analysis with health suggestions</p>
+          <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>Upload your medical reports for AI- assisted health information</p>
         </div>
       </div>
 
@@ -191,9 +191,9 @@ function Reports() {
                     <div>
                       <p style={{ fontSize: '52px', margin: '0 0 12px 0' }}>📎</p>
                       <p style={{ fontWeight: '800', color: '#374151', fontSize: '16px', margin: '0 0 6px 0' }}>
-                        Drop file here or click to browse
+                        Drag & drop your report or click to upload
                       </p>
-                      <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 16px 0' }}>PDF, JPG, PNG — Max 10 MB</p>
+                      <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 16px 0' }}>Supported: PDF, JPG, PNG (Max 10 MB)</p>
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         {['📄 Lab Report', '💊 Prescription', '🩻 X-Ray', '📋 Discharge Summary'].map(t => (
                           <span key={t} style={{ background: '#f1f5f9', color: '#64748b', padding: '5px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: '600' }}>{t}</span>
@@ -215,7 +215,7 @@ function Reports() {
                       <div style={{ width: '18px', height: '18px', border: '3px solid rgba(124,58,237,0.3)', borderTop: '3px solid #7c3aed', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
                       Analyzing with AI...
                     </>
-                  ) : <><span>🔬</span> Upload & Analyze with AI</>}
+                  ) : <><span>🔬</span> Upload & Get AI Insights</>}
                 </button>
               </form>
             </div>
@@ -228,7 +228,7 @@ function Reports() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <p style={{ color: 'white', fontWeight: '900', fontSize: '17px', margin: '0 0 4px 0' }}>
-                      🔍 AI Analysis Complete!
+                      🔍 Report Analysis Complete!
                     </p>
                     <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: 0 }}>
                       {docIcons[result.document_type] || '📄'} {result.document_type?.replace(/_/g, ' ')} · {result.file_name}
@@ -236,7 +236,7 @@ function Reports() {
                   </div>
                   {result.risk_level && (
                     <span style={S.riskBadge(result.risk_level)}>
-                      {getRiskIcon(result.risk_level)} Risk: {result.risk_level?.toUpperCase()}
+                      {getRiskIcon(result.risk_level)} Reorted Risk level: {result.risk_level?.toUpperCase()}
                     </span>
                   )}
                 </div>
@@ -245,7 +245,7 @@ function Reports() {
 
                 {/* AI Summary */}
                 <div style={S.summaryBox}>
-                  <p style={{ fontWeight: '800', color: '#6d28d9', margin: '0 0 10px 0', fontSize: '14px' }}>🤖 AI Summary</p>
+                  <p style={{ fontWeight: '800', color: '#6d28d9', margin: '0 0 10px 0', fontSize: '14px' }}>🤖 Report Summary</p>
                   <pre style={{ whiteSpace: 'pre-wrap', fontSize: '13px', color: '#4c1d95', fontFamily: 'inherit', lineHeight: '1.7', margin: 0 }}>
                     {result.ai_summary}
                   </pre>
@@ -254,7 +254,7 @@ function Reports() {
                 {/* Health Suggestions */}
                 {result.ai_suggestions?.length > 0 && (
                   <div style={{ marginBottom: '16px' }}>
-                    <p style={{ fontWeight: '800', color: '#059669', margin: '0 0 10px 0', fontSize: '14px' }}>💡 Health Suggestions</p>
+                    <p style={{ fontWeight: '800', color: '#059669', margin: '0 0 10px 0', fontSize: '14px' }}>💡Helpful Health Information</p>
                     {result.ai_suggestions.map((s, i) => (
                       <div key={i} style={S.suggestionItem}>
                         <span style={{ color: '#059669', fontWeight: '800', fontSize: '14px', flexShrink: 0 }}>{i + 1}.</span>
@@ -287,7 +287,7 @@ function Reports() {
                   <div style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', border: '1px solid #93c5fd', borderRadius: '14px', padding: '16px', marginBottom: '16px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                     <span style={{ fontSize: '24px' }}>👨‍⚕️</span>
                     <div>
-                      <p style={{ fontWeight: '800', color: '#1d4ed8', margin: '0 0 4px 0', fontSize: '13px' }}>When to See Doctor</p>
+                      <p style={{ fontWeight: '800', color: '#1d4ed8', margin: '0 0 4px 0', fontSize: '13px' }}>When to Seek Professional Care</p>
                       <p style={{ color: '#1e40af', fontSize: '13px', margin: 0, lineHeight: '1.5' }}>{result.when_to_see_doctor}</p>
                     </div>
                   </div>
@@ -296,7 +296,7 @@ function Reports() {
                 {/* Abnormal Values */}
                 {result.abnormal_values?.length > 0 && (
                   <div style={{ marginBottom: '16px' }}>
-                    <p style={{ fontWeight: '800', color: '#dc2626', margin: '0 0 10px 0', fontSize: '14px' }}>⚠️ Abnormal Values</p>
+                    <p style={{ fontWeight: '800', color: '#dc2626', margin: '0 0 10px 0', fontSize: '14px' }}>⚠️ Values Requiring attention</p>
                     {result.abnormal_values.map((v, i) => (
                       <div key={i} style={S.abnormalItem}>
                         <div>
@@ -314,12 +314,20 @@ function Reports() {
                 {/* Medicines */}
                 {result.medicines_found?.length > 0 && (
                   <div style={{ marginBottom: '12px' }}>
-                    <p style={{ fontWeight: '800', color: '#1e293b', margin: '0 0 10px 0', fontSize: '14px' }}>💊 Medicines Found</p>
+                    <p style={{ fontWeight: '800', color: '#1e293b', margin: '0 0 10px 0', fontSize: '14px' }}>💊 Medicines Mentioned in Report</p>
                     <div>
                       {result.medicines_found.map((m, i) => (
                         <span key={i} style={S.medicineChip}>{m}</span>
                       ))}
                     </div>
+                     <p style={{
+  color: '#64748b',
+  fontSize: '11px',
+  margin: '4px 0 0 0',
+  lineHeight: '1.5'
+}}>
+  Medicine names are shown for information only. Follow your healthcare professional's advice.
+</p>                 
                   </div>
                 )}
 
@@ -346,7 +354,7 @@ function Reports() {
                 <div style={S.emptyState}>
                   <p style={{ fontSize: '44px', margin: '0 0 12px 0' }}>📭</p>
                   <p style={{ fontWeight: '700', color: '#374151', margin: '0 0 4px 0' }}>No reports yet</p>
-                  <p style={{ color: '#94a3b8', fontSize: '13px', margin: 0 }}>Upload your first report</p>
+                  <p style={{ color: '#94a3b8', fontSize: '13px', margin: 0 }}>Your uploaded reports will appear here</p>
                 </div>
               ) : (
                 reports.map((report, i) => (
@@ -363,7 +371,13 @@ function Reports() {
                           {report.file_name}
                         </p>
                         <p style={{ color: '#94a3b8', fontSize: '11px', margin: 0 }}>
-                          {report.created_at?.substring(0, 10)}
+                          {report.created_at
+  ? new Date(report.created_at).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+  : '—'}
                         </p>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
@@ -390,7 +404,7 @@ function Reports() {
                         </p>
                         {report.ai_suggestions?.length > 0 && (
                           <div style={{ marginTop: '8px' }}>
-                            <p style={{ fontSize: '11px', color: '#059669', fontWeight: '700', margin: '0 0 4px 0' }}>Suggestions:</p>
+                            <p style={{ fontSize: '11px', color: '#059669', fontWeight: '700', margin: '0 0 4px 0' }}>Helpful Information:</p>
                             {report.ai_suggestions.slice(0, 3).map((s, j) => (
                               <p key={j} style={{ fontSize: '11px', color: '#166534', margin: '0 0 2px 0' }}>• {s}</p>
                             ))}
@@ -408,10 +422,10 @@ function Reports() {
           <div style={S.infoCard}>
             <p style={{ fontWeight: '800', color: '#1d4ed8', fontSize: '14px', margin: '0 0 12px 0' }}>ℹ️ Supported Reports</p>
             {[
-              { icon: '🔬', text: 'Blood / Lab Reports (PDF)' },
-              { icon: '💊', text: 'Prescriptions (JPG/PNG)' },
+              { icon: '🔬', text: 'Blood & Lab Reports (PDF)' },
+              { icon: '💊', text: 'Doctor Prescriptions (JPG/PNG)' },
               { icon: '📋', text: 'Discharge Summaries (PDF)' },
-              { icon: '🩻', text: 'X-Ray Images (JPG/PNG)' },
+              { icon: '🩻', text: 'X-Ray & Scan Reports (JPG/PNG)' },
             ].map((item, i) => (
               <p key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#1d4ed8', fontSize: '13px', margin: '0 0 8px 0' }}>
                 <span>{item.icon}</span> {item.text}

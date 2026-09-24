@@ -193,7 +193,7 @@ function Profile() {
           <div style={S.headerIcon}>👤</div>
           <div>
             <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1e293b', margin: 0 }}>My Profile</h1>
-            <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>Manage your health information</p>
+            <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>Manage your personal health profile</p>
           </div>
         </div>
         {saved && <div style={S.savedBadge}>✅ Profile saved successfully!</div>}
@@ -204,7 +204,7 @@ function Profile() {
         <div style={S.avatar}>{profile?.full_name?.charAt(0) || '?'}</div>
         <div>
           <h2 style={{ fontWeight: '900', fontSize: '24px', margin: '0 0 4px 0' }}>{profile?.full_name}</h2>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: '0 0 4px 0' }}>{profile?.email}</p>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: '0 0 4px 0' }}>Aronexa Patient Account</p>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', margin: 0 }}>
             📍 {profile?.village || 'Location'}, {profile?.district || 'District'}
           </p>
@@ -297,13 +297,13 @@ function Profile() {
 
           {/* Health Info */}
           <div style={S.healthCard}>
-            <p style={S.sectionTitle}>🏥 Health Information</p>
+            <p style={S.sectionTitle}>🏥 Health Details</p>
 
             <p style={S.healthLabel}>Known Diseases</p>
             <div style={{ marginBottom: '14px' }}>
               {profile?.known_diseases?.length > 0
                 ? profile.known_diseases.map((d, i) => <span key={i} style={S.tag('#fee2e2', '#fca5a5', '#dc2626')}>{d}</span>)
-                : <span style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic' }}>None specified</span>
+                : <span style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic' }}>No information added</span>
               }
             </div>
 
@@ -311,7 +311,7 @@ function Profile() {
             <div style={{ marginBottom: '14px' }}>
               {profile?.allergies?.length > 0
                 ? profile.allergies.map((a, i) => <span key={i} style={S.tag('#fed7aa', '#fb923c', '#ea580c')}>{a}</span>)
-                : <span style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic' }}>None specified</span>
+                : <span style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic' }}>No information added</span>
               }
             </div>
 
@@ -319,14 +319,14 @@ function Profile() {
             <div>
               {profile?.current_medicines?.length > 0
                 ? profile.current_medicines.map((m, i) => <span key={i} style={S.tag('#dbeafe', '#93c5fd', '#1d4ed8')}>{m}</span>)
-                : <span style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic' }}>None specified</span>
+                : <span style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic' }}>No information added</span>
               }
             </div>
           </div>
 
           {/* Account Info */}
           <div style={S.accountCard}>
-            <p style={S.sectionTitle}>⚙️ Account Info</p>
+            <p style={S.sectionTitle}>⚙️ Account Details</p>
             {[
               { label: 'Email', value: profile?.email },
               { label: 'Role', value: profile?.role || 'Patient' },
@@ -342,9 +342,9 @@ function Profile() {
           {/* Completion Tip */}
           {pct < 100 && (
             <div style={S.tipCard}>
-              <p style={{ fontWeight: '800', color: '#92400e', fontSize: '14px', margin: '0 0 6px 0' }}>💡 Complete Your Profile</p>
+              <p style={{ fontWeight: '800', color: '#92400e', fontSize: '14px', margin: '0 0 6px 0' }}>💡 Complete Your Health Profile</p>
               <p style={{ color: '#78350f', fontSize: '13px', margin: '0 0 10px 0', lineHeight: '1.5' }}>
-                A complete profile gives better hospital recommendations and more accurate health guidance.
+                A complete profile helps provide more personalized hospital recommendations and AI-assisted health guidance.
               </p>
               <button onClick={() => setEditing(true)}
                 style={{ background: 'none', border: 'none', color: '#d97706', fontWeight: '800', cursor: 'pointer', fontSize: '13px', padding: 0, fontFamily: 'inherit' }}>

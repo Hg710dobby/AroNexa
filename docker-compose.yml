@@ -4,13 +4,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: healthmitra-frontend
+    container_name: AroNexa-frontend
     ports:
       - "80:80"
     depends_on:
       - backend
     networks:
-      - healthmitra-network
+      - AroNexa-network
     restart: unless-stopped
 
   # Backend Container
@@ -18,26 +18,26 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: healthmitra-backend
+    container_name: AroNexa-backend
     ports:
       - "8000:8000"
     environment:
       - MONGODB_URL=${MONGODB_URL}
-      - DATABASE_NAME=${DATABASE_NAME:-healthmitra}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-healthmitra-super-secret-2024}
+      - DATABASE_NAME=${DATABASE_NAME:-AroNexa}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-AroNexa-super-secret-2024}
       - JWT_ALGORITHM=HS256
       - JWT_EXPIRATION_MINUTES=1440
       - GROQ_API_KEY=${GROQ_API_KEY}
       - HOST=0.0.0.0
       - PORT=8000
     networks:
-      - healthmitra-network
+      - AroNexa-network
     restart: unless-stopped
 
   # Nginx Load Balancer
   nginx:
     image: nginx:alpine
-    container_name: healthmitra-nginx
+    container_name: AroNexa-nginx
     ports:
       - "443:443"
     volumes:
@@ -46,9 +46,9 @@ services:
       - frontend
       - backend
     networks:
-      - healthmitra-network
+      - AroNexa-network
     restart: unless-stopped
 
 networks:
-  healthmitra-network:
+  AroNexa-network:
     driver: bridge

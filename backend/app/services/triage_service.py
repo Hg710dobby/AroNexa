@@ -540,7 +540,7 @@ class TriageService:
             "precautions": precautions, "medicines_info": medicines,
             "when_to_see_doctor": when_to_see,
             "latitude": latitude, "longitude": longitude,
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now()
         }
         await db.triage_records.insert_one(record)
 

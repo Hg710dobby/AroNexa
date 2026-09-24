@@ -187,6 +187,112 @@ SAMPLE_HOSPITALS = [
         "rating": 4.0,
         "open_hours": "24/7"
     },
+    # Madhya Pradesh Hospitals
+    {
+        "name": "MY Hospital Indore",
+        "hospital_type": "Government",
+        "address": "MY Hospital Campus, Indore, Madhya Pradesh",
+        "district": "Indore",
+        "state": "Madhya Pradesh",
+        "latitude": 22.7196,
+        "longitude": 75.8577,
+        "phone": "0731-2527301",
+        "facilities": ["Emergency", "ICU", "Surgery", "Medicine", "Lab", "X-Ray"],
+        "emergency_available": True,
+        "beds_available": 1000,
+        "rating": 4.0,
+        "open_hours": "24/7"
+    },
+    {
+        "name": "Choithram Hospital and Research Centre Indore",
+        "hospital_type": "Private",
+        "address": "Manik Bagh Road, Indore, Madhya Pradesh",
+        "district": "Indore",
+        "state": "Madhya Pradesh",
+        "latitude": 22.6980,
+        "longitude": 75.8330,
+        "phone": "",
+        "facilities": ["Emergency", "ICU", "Cardiology", "Neurology", "Surgery", "Lab"],
+        "emergency_available": True,
+        "beds_available": 350,
+        "rating": 4.2,
+        "open_hours": "24/7"
+    },
+    {
+        "name": "Bombay Hospital Indore",
+        "hospital_type": "Private",
+        "address": "Ring Road, Indore, Madhya Pradesh",
+        "district": "Indore",
+        "state": "Madhya Pradesh",
+        "latitude": 22.7240,
+        "longitude": 75.8870,
+        "phone": "",
+        "facilities": ["Emergency", "ICU", "Cardiology", "Cancer", "Neurology", "Surgery"],
+        "emergency_available": True,
+        "beds_available": 500,
+        "rating": 4.3,
+        "open_hours": "24/7"
+    },
+    {
+        "name": "District Hospital Ujjain",
+        "hospital_type": "Government",
+        "address": "Ujjain, Madhya Pradesh",
+        "district": "Ujjain",
+        "state": "Madhya Pradesh",
+        "latitude": 23.1765,
+        "longitude": 75.7885,
+        "phone": "",
+        "facilities": ["Emergency", "ICU", "Surgery", "Medicine", "Lab", "X-Ray"],
+        "emergency_available": True,
+        "beds_available": 300,
+        "rating": 3.7,
+        "open_hours": "24/7"
+    },
+    {
+        "name": "RD Gardi Medical College Hospital Ujjain",
+        "hospital_type": "Teaching Hospital",
+        "address": "Agar Road, Ujjain, Madhya Pradesh",
+        "district": "Ujjain",
+        "state": "Madhya Pradesh",
+        "latitude": 23.1820,
+        "longitude": 75.8060,
+        "phone": "",
+        "facilities": ["Emergency", "ICU", "All Specialties", "Trauma", "Lab", "Radiology"],
+        "emergency_available": True,
+        "beds_available": 1000,
+        "rating": 4.0,
+        "open_hours": "24/7"
+    },
+    {
+        "name": "District Hospital Dewas",
+        "hospital_type": "Government",
+        "address": "Dewas, Madhya Pradesh",
+        "district": "Dewas",
+        "state": "Madhya Pradesh",
+        "latitude": 22.9676,
+        "longitude": 76.0534,
+        "phone": "",
+        "facilities": ["Emergency", "ICU", "Surgery", "Medicine", "Lab", "X-Ray"],
+        "emergency_available": True,
+        "beds_available": 300,
+        "rating": 3.7,
+        "open_hours": "24/7"
+    },
+    {
+        "name": "Amaltas Hospital Dewas",
+        "hospital_type": "Private",
+        "address": "Dewas, Madhya Pradesh",
+        "district": "Dewas",
+        "state": "Madhya Pradesh",
+        "latitude": 22.9600,
+        "longitude": 76.0600,
+        "phone": "",
+        "facilities": ["Emergency", "ICU", "Surgery", "Medicine", "Lab"],
+        "emergency_available": True,
+        "beds_available": 200,
+        "rating": 3.8,
+        "open_hours": "24/7"
+    },
     # Delhi NCR
     {
         "name": "AIIMS New Delhi",
@@ -341,35 +447,79 @@ class HospitalService:
 
     async def seed_hospitals(self):
         db = get_database()
-        existing = await db.hospitals.count_documents({})
-        if existing > 0:
-            return existing  # Already seeded, skip
 
+        existing_names = set(
+            await db.hospitals.distinct("name")
+        )
+        
+        phone_updates = {
+            "MY Hospital Indore": "0731-2527301",
+            "Choithram Hospital and Research Centre Indore": "0731-4206750",
+            "Bombay Hospital Indore": "0731-4771111",
+            "District Hospital Ujjain": "0734-2554783",
+            "RD Gardi Medical College Hospital Ujjain": "07368-261235",
+            "District Hospital Dewas": "07272-253323",
+            "Amaltas Hospital Dewas": "1800-571-2120",
+        }
+
+        for hospital_name, phone in phone_updates.items():
+            await db.hospitals.update_one(
+                {"name": hospital_name},
+                {"$set": {"phone": phone}}
+            )
         hospitals_to_insert = []
+
         for h in SAMPLE_HOSPITALS:
-            hospital = dict(h)  # Create a copy to avoid mutating the original
+            if h["name"] in existing_names:
+                continue
+
+            hospital = dict(h)
             hospital["is_active"] = True
             hospital["created_at"] = datetime.utcnow()
+
             hospitals_to_insert.append(hospital)
 
-        result = await db.hospitals.insert_many(hospitals_to_insert)
-        return len(result.inserted_ids)
+        if not hospitals_to_insert:
+            return 0
 
-    async def find_nearby(self, latitude, longitude, radius_km=200.0,
-                          hospital_type=None, emergency_only=False):
+        result = await db.hospitals.insert_many(hospitals_to_insert)
+
+        return len(result.inserted_ids)
+    
+    async def find_nearby(
+        self,
+        latitude,
+        longitude,
+        radius_km=200.0,
+        hospital_type=None,
+        emergency_only=False
+    ):
         db = get_database()
+
         query = {"is_active": True}
+
         if hospital_type:
             query["hospital_type"] = hospital_type
+
         if emergency_only:
             query["emergency_available"] = True
 
         hospitals = []
+        seen_names = set()
+
         async for h in db.hospitals.find(query):
+            if h["name"] in seen_names:
+                continue
+
+            seen_names.add(h["name"])
+
             distance = self.haversine_distance(
-                latitude, longitude,
-                h["latitude"], h["longitude"]
+                latitude,
+                longitude,
+                h["latitude"],
+                h["longitude"]
             )
+
             if distance <= radius_km:
                 hospitals.append({
                     "id": str(h["_id"]),
@@ -392,11 +542,98 @@ class HospitalService:
 
         hospitals.sort(key=lambda x: x["distance_km"])
         return hospitals
+    
+    async def get_hospital_stats(self):
+        db = get_database()
+
+        total = await db.hospitals.count_documents({})
+
+        unique_names = await db.hospitals.distinct("name")
+
+        return {
+            "total_records": total,
+            "unique_hospitals": len(unique_names),
+            "duplicate_records": total - len(unique_names)
+        }
+
+    async def get_duplicate_groups(self):
+        db = get_database()
+
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$name",
+                    "count": {"$sum": 1}
+                }
+            },
+            {
+                "$match": {
+                    "count": {"$gt": 1}
+                }
+            },
+            {
+                "$sort": {
+                    "count": -1
+                }
+            }
+        ]
+
+        groups = await db.hospitals.aggregate(pipeline).to_list(None)
+
+        return [
+            {
+                "name": group["_id"],
+                "count": group["count"],
+                "duplicates": group["count"] - 1
+            }
+            for group in groups
+        ]
+
+    async def cleanup_duplicate_hospitals(self):
+        db = get_database()
+
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$name",
+                    "ids": {"$push": "$_id"},
+                    "count": {"$sum": 1}
+                }
+            },
+            {
+                "$match": {
+                    "count": {"$gt": 1}
+                }
+            }
+        ]
+
+        duplicate_groups = await db.hospitals.aggregate(pipeline).to_list(None)
+
+        deleted_count = 0
+
+        for group in duplicate_groups:
+            ids_to_delete = group["ids"][1:]
+
+            if ids_to_delete:
+                result = await db.hospitals.delete_many({
+                    "_id": {"$in": ids_to_delete}
+                })
+
+                deleted_count += result.deleted_count
+
+        return {
+            "deleted_duplicates": deleted_count
+        }    
 
     async def get_hospital_by_id(self, hospital_id):
         db = get_database()
-        h = await db.hospitals.find_one({"_id": ObjectId(hospital_id)})
+
+        h = await db.hospitals.find_one({
+            "_id": ObjectId(hospital_id)
+        })
+
         if h:
             h["id"] = str(h.pop("_id"))
             return h
+
         return None

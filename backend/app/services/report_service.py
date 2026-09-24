@@ -142,7 +142,7 @@ class ReportService:
                 return {}
 
             prompt_text = (
-                "You are HealthMitra, an expert AI medical report analyzer for rural Indian healthcare. "
+                "You are AroNexa, an expert AI medical report analyzer for rural Indian healthcare. "
                 "Analyze this medical document thoroughly. "
                 "Return ONLY a raw JSON object with these keys (no markdown):\n"
                 '{"summary": "...", "suggestions": ["..."], "risk_level": "low/medium/high", '
@@ -180,7 +180,7 @@ class ReportService:
     def _generate_ai_summary(self, text: str, doc_type: str, extracted_data: dict) -> dict:
         """Generate AI summary using Groq (Llama), with fallback."""
         prompt = (
-            "You are HealthMitra, an AI medical report analyzer for rural Indian healthcare. "
+            "You are AroNexa, an AI medical report analyzer for rural Indian healthcare. "
             f"Analyze this {doc_type.replace('_', ' ')} report.\n\n"
             f"Text:\n{text[:3000]}\n\n"
             f"Medicines: {', '.join(extracted_data.get('medicines', [])) or 'None'}\n"

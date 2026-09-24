@@ -195,8 +195,8 @@ function Login() {
       <div style={S.container}>
         <div style={S.logoSection}>
           <div style={S.logoIcon}>🏥</div>
-          <h1 style={S.logoTitle}>Health<span style={{ color: '#059669' }}>Mitra</span></h1>
-          <p style={S.logoSub}>AI-Powered Rural Health Assistant</p>
+          <h1 style={S.logoTitle}>AroNexa</h1>
+          <p style={S.logoSub}>AI-Assisted Smart Healthcare Platform</p>
         </div>
 
         <div style={S.card}>
@@ -222,8 +222,8 @@ function Login() {
               <span style={{ fontSize: '20px' }}>{isAdmin ? '👩‍⚕️' : '🧑‍🤝‍🧑'}</span>
               <span>
                 {isAdmin
-                  ? 'Login as ASHA Worker / Admin to manage patients and view health trends'
-                  : 'Login as Patient to check symptoms, find hospitals, and manage health'
+                  ? 'Access patient records, community health insights, and healthcare tools'
+                  : 'Access symptom checks, medical reports, hospitals, and your health profile'
                 }
               </span>
             </div>
@@ -268,14 +268,14 @@ function Login() {
               >
                 {loading
                   ? '⏳ Logging in...'
-                  : isAdmin ? '🔐 Login as ASHA Worker' : '🚀 Login to Dashboard'
+                  : isAdmin ? '🔐 Continue as ASHA Worker' : '🚀 Continue as Patient'
                 }
               </button>
             </form>
 
             <div style={S.linkRow}>
               Don't have an account?{' '}
-              <Link to="/register" style={S.link}>Create Account</Link>
+              <Link to="/register" style={S.link}>Create Patient Account</Link>
             </div>
           </div>
         </div>
@@ -283,7 +283,7 @@ function Login() {
         <div style={S.emergencyBox}>
           🚨 Medical Emergency? Call <strong>108</strong>
         </div>
-        <p style={S.disclaimer}>⚠️ Not for medical diagnosis. Always consult a doctor.</p>
+        <p style={S.disclaimer}>⚠️ AI-assisted information only. Always consut a qualified healthcare professional.</p>
       </div>
     </div>
   );

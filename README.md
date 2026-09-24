@@ -1,4 +1,4 @@
-# 🏥 HealthMitra — Production AI-Powered Rural Healthcare Platform
+# 🏥 AroNexa — Production AI-Powered Rural Healthcare Platform
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg?logo=react)](https://reactjs.org)
@@ -75,7 +75,7 @@ flowchart TD
 ## 📁 Repository Folder Structure
 
 ```
-healthmitra/
+AroNexa/
 ├── backend/                        # FastAPI Backend Service
 │   ├── app/
 │   │   ├── models/                 # Pydantic Data Models (User, Triage, Hospital, Report)
@@ -140,8 +140,8 @@ healthmitra/
 
 ```powershell
 # 1. Clone the repository
-git clone https://github.com/Jaydeep0832/healthmitra.git
-cd healthmitra
+git clone https://github.com/Jaydeep0832/AroNexa.git
+cd AroNexa
 
 # 2. Configure environment variables in .env at project root
 # Add MONGO_URI and GROQ_API_KEY
@@ -199,7 +199,7 @@ npm start                  # Runs on http://localhost:3000
 
 ## 📊 Database Architecture (MongoDB Atlas)
 
-Database: `healthmitra` · 4 Collections · 10 Indexes
+Database: `AroNexa` · 4 Collections · 10 Indexes
 
 | Collection | Doc Count | Key Fields & Indexing |
 |---|---|---|
@@ -221,7 +221,7 @@ Database: `healthmitra` · 4 Collections · 10 Indexes
 
 ## ⚠️ Disclaimer
 
-HealthMitra provides AI-based preliminary health guidance only. It is **not** a substitute for professional medical diagnosis, advice, or treatment. Always consult a qualified healthcare provider for medical concerns. In life-threatening emergencies, immediately contact **108** (Ambulance) or **102** (Medical Helpline).
+AroNexa provides AI-based preliminary health guidance only. It is **not** a substitute for professional medical diagnosis, advice, or treatment. Always consult a qualified healthcare provider for medical concerns. In life-threatening emergencies, immediately contact **108** (Ambulance) or **102** (Medical Helpline).
 
 ---
 

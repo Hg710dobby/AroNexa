@@ -128,8 +128,8 @@ function History() {
         <div style={S.header}>
           <div style={S.headerIcon}>📋</div>
           <div>
-            <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1e293b', margin: 0 }}>Consultation History</h1>
-            <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>{history.length} total checkups</p>
+            <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1e293b', margin: 0 }}>Symptom Check History</h1>
+            <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>{history.length} symptom records</p>
           </div>
         </div>
         <Link to="/symptom-checker" style={S.newBtn}>+ New Checkup</Link>
@@ -169,7 +169,7 @@ function History() {
         <div style={S.emptyState}>
           <p style={{ fontSize: '56px', margin: '0 0 16px 0' }}>📭</p>
           <h3 style={{ fontWeight: '800', color: '#374151', fontSize: '20px', margin: '0 0 8px 0' }}>No records found</h3>
-          <p style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 20px 0' }}>Start your first AI symptom checkup</p>
+          <p style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 20px 0' }}>Your Symptom checkup history will appear here</p>
           <Link to="/symptom-checker" style={{
             background: 'linear-gradient(135deg, #059669, #047857)', color: 'white',
             padding: '12px 28px', borderRadius: '14px', textDecoration: 'none',
@@ -191,11 +191,27 @@ function History() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
                     <span style={S.urgencyBadge(cfg.badgeBg, cfg.badgeColor)}>{cfg.text}</span>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Confidence: <strong>{(record.confidence * 100).toFixed(0)}%</strong>
+                      AI assesment
                     </span>
-                    <span style={{ fontSize: '12px', color: '#94a3b8', textTransform: 'capitalize' }}>📱 {record.input_type}</span>
+                    <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+  {record.input_type === 'voice'
+    ? '🎙️ Voice input'
+    : record.input_type === 'text'
+      ? '⌨️ Text input'
+      : '📝 Symptom check'}
+</span>
+                   {record.language && (
+  <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+    🌐 {record.language}
+  </span>
+)}
+                   {record.latitude && record.longitude && (
+  <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+    📍 Location used
+  </span>
+)}
                   </div>
-                  <p style={{ color: '#374151', fontSize: '14px', fontWeight: '600', margin: '0 0 8px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <p style={{ color: '#374151', fontSize: '14px', fontWeight: '600', margin: '0 0 8px 0', overflow: 'hidden', textOverflow: 'ellipsis',  }}>
                     "{record.symptoms}"
                   </p>
                   <div>
@@ -209,20 +225,53 @@ function History() {
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <p style={{ fontWeight: '700', color: '#374151', fontSize: '13px', margin: '0 0 2px 0' }}>
-                    {record.created_at?.substring(0, 10)}
+                  {record.created_at ? new Date(record.created_at).toLocaleDateString('en-IN', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric'
+}) : '—'}
                   </p>
                   <p style={{ color: '#94a3b8', fontSize: '12px', margin: '0 0 8px 0' }}>
-                    {record.created_at?.substring(11, 16)}
+                    {record.created_at ? new Date(record.created_at).toLocaleTimeString('en-IN', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true
+}) : '—'}
                   </p>
-                  <span style={{ fontSize: '18px', color: '#94a3b8' }}>{isExpanded ? '▲' : '▼'}</span>
+                  <span style={{ fontSize: '18px', color: '#94a3b8' }}>
+  {isExpanded ? '▲' : '▼'}
+</span>
                 </div>
               </div>
 
               {isExpanded && (
                 <div style={S.expandedBody}>
+                  <div style={{
+  background: 'rgba(255,255,255,0.7)',
+  borderRadius: '12px',
+  padding: '12px 16px',
+  marginBottom: '12px'
+}}>
+  <p style={{
+    fontWeight: '800',
+    color: '#374151',
+    fontSize: '13px',
+    margin: '0 0 6px 0'
+  }}>
+    Symptoms Provided:
+  </p>
+  <p style={{
+    color: '#475569',
+    fontSize: '13px',
+    margin: 0,
+    lineHeight: '1.6'
+  }}>
+    {record.symptoms || 'No symptom details available.'}
+  </p>
+</div>
                   <div style={S.expandGrid}>
                     <div style={S.expandBox('rgba(255,255,255,0.7)')}>
-                      <p style={{ fontWeight: '800', color: '#374151', fontSize: '13px', margin: '0 0 8px 0' }}>Possible Conditions:</p>
+                      <p style={{ fontWeight: '800', color: '#374151', fontSize: '13px', margin: '0 0 8px 0' }}> Health Information :</p>
                       {record.possible_conditions?.map((c, j) => (
                         <p key={j} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#475569', fontSize: '12px', margin: '0 0 4px 0' }}>
                           <span style={{ width: '5px', height: '5px', background: '#94a3b8', borderRadius: '50%', flexShrink: 0, display: 'inline-block' }}></span>
@@ -231,7 +280,7 @@ function History() {
                       ))}
                     </div>
                     <div style={S.expandBox('rgba(255,255,255,0.7)')}>
-                      <p style={{ fontWeight: '800', color: '#374151', fontSize: '13px', margin: '0 0 8px 0' }}>Top Recommendations:</p>
+                      <p style={{ fontWeight: '800', color: '#374151', fontSize: '13px', margin: '0 0 8px 0' }}>Helpful Guidance:</p>
                       {record.recommendations?.slice(0, 3).map((r, j) => (
                         <p key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: '#475569', fontSize: '12px', margin: '0 0 4px 0' }}>
                           <span style={{ color: '#059669', fontWeight: '700', flexShrink: 0 }}>→</span>
@@ -240,8 +289,74 @@ function History() {
                       ))}
                     </div>
                   </div>
+
+                  {record.precautions?.length > 0 && (
+  <div style={{
+    background: 'rgba(255,255,255,0.7)',
+    borderRadius: '12px',
+    padding: '12px 16px',
+    marginBottom: '12px'
+  }}>
+    <p style={{
+      fontWeight: '800',
+      color: '#374151',
+      fontSize: '13px',
+      margin: '0 0 6px 0'
+    }}>
+      Precautions:
+    </p>
+
+    {record.precautions.slice(0, 4).map((p, j) => (
+      <p key={j} style={{
+        color: '#475569',
+        fontSize: '12px',
+        margin: '0 0 4px 0',
+        lineHeight: '1.5'
+      }}>
+        • {p}
+      </p>
+    ))}
+  </div>
+)}
+
+                {record.medicines_info?.length > 0 && (
+  <div style={{
+    background: 'rgba(255,255,255,0.7)',
+    borderRadius: '12px',
+    padding: '12px 16px',
+    marginBottom: '12px'
+  }}>
+    <p style={{
+      fontWeight: '800',
+      color: '#374151',
+      fontSize: '13px',
+      margin: '0 0 8px 0'
+    }}>
+      Medicine Information:
+    </p>
+
+    {record.medicines_info.slice(0, 4).map((med, j) => (
+      <p key={j} style={{
+        color: '#475569',
+        fontSize: '12px',
+        margin: '0 0 5px 0',
+        lineHeight: '1.5'
+      }}>
+        • {typeof med === 'string' ? med : med.name}
+      </p>
+    ))}
+
+    <p style={{
+      color: '#64748b',
+      fontSize: '11px',
+      margin: '8px 0 0 0'
+    }}>
+      For information only. Consult a healthcare professional before using any medicine.
+    </p>
+  </div>
+)}
                   <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: '12px', padding: '12px 16px' }}>
-                    <p style={{ fontWeight: '800', color: '#374151', fontSize: '13px', margin: '0 0 6px 0' }}>Doctor Advice:</p>
+                    <p style={{ fontWeight: '800', color: '#374151', fontSize: '13px', margin: '0 0 6px 0' }}>When to Seek Professional Care:</p>
                     <p style={{ color: '#475569', fontSize: '12px', margin: 0, lineHeight: '1.6' }}>{record.when_to_see_doctor}</p>
                   </div>
                 </div>

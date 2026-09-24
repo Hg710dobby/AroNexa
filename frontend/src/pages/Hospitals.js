@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { hospitalAPI, userAPI } from '../services/api';
 
 const S = {
@@ -89,6 +89,13 @@ const S = {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
     textDecoration: 'none',
   },
+
+  detailsBtn: {
+    width: '100%', background: '#f0fdf4', color: '#047857',
+    border: '2px solid #bbf7d0', borderRadius: '12px', padding: '10px',
+    fontSize: '13px', fontWeight: '800', cursor: 'pointer', fontFamily: 'inherit',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+  },
   skeleton: {
     background: 'linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)',
     backgroundSize: '200% 100%',
@@ -111,17 +118,39 @@ function Hospitals() {
   const [hospitals, setHospitals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedHospital, setSelectedHospital] = useState(null);
   const [location, setLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState('detecting'); // detecting, granted, denied, fallback
   const [filter, setFilter] = useState('all');
   const [searchText, setSearchText] = useState('');
   const [radius, setRadius] = useState(200);
+  
+  const fetchHospitals = useCallback(async (lat, lng, r = 200) => {
+  setLoading(true);
+  setError('');
 
-  useEffect(() => {
-    detectLocation();
-  }, []);
+  try {
+    const res = await hospitalAPI.getNearby(lat, lng, r);
 
-  const detectLocation = async () => {
+    console.log('API DATA:', res.data);
+
+    const hospitalList = res.data?.hospitals || [];
+
+    console.log('SETTING HOSPITALS:', hospitalList.length);
+
+    setHospitals(hospitalList);
+  } catch (err) {
+    console.error('HOSPITAL ERROR:', err.response?.data || err.message);
+    setError(
+      err.response?.data?.detail ||
+      'Failed to fetch hospitals. Make sure backend is running.'
+    );
+  } finally {
+    setLoading(false);
+  }
+},[]);
+  
+  const detectLocation = useCallback(async () => {
     setLocationStatus('detecting');
     setError('');
     
@@ -188,29 +217,38 @@ function Hospitals() {
       setError('Your browser does not support geolocation. Showing default location.');
       fetchHospitals(fallbackLoc.latitude, fallbackLoc.longitude, radius);
     }
-  };
+  },[radius, fetchHospitals]);
 
-  const fetchHospitals = async (lat, lng, r = 200) => {
-    setLoading(true);
-    try {
-      const res = await hospitalAPI.getNearby(lat, lng, r);
-      setHospitals(res.data.hospitals || []);
-    } catch (err) {
-      setError('Failed to fetch hospitals. Make sure backend is running.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    detectLocation();
+  }, [detectLocation]);
 
-  const filtered = hospitals.filter(h => {
-    const matchType = filter === 'all' || h.hospital_type === filter;
-    const matchSearch = !searchText || h.name.toLowerCase().includes(searchText.toLowerCase()) || h.address.toLowerCase().includes(searchText.toLowerCase());
-    return matchType && matchSearch;
-  });
+  
+ const filtered = hospitals.filter(h => {
+  const name = h?.name || '';
+  const address = h?.address || '';
+  const type = h?.hospital_type || '';
 
-  const types = ['all', ...new Set(hospitals.map(h => h.hospital_type))];
+  const matchType = filter === 'all' || type === filter;
 
+  const search = searchText.trim().toLowerCase();
+
+  const matchSearch =
+    !search ||
+    name.toLowerCase().includes(search) ||
+    address.toLowerCase().includes(search);
+
+  return matchType && matchSearch;
+});
+
+  const types = [
+  'all',
+  ...new Set(hospitals.map(h => h?.hospital_type).filter(Boolean))
+];
   const getStars = (rating) => '⭐'.repeat(Math.round(rating));
+
+console.log("HOSPITALS STATE:", hospitals);
+console.log("FILTERED STATE:", filtered);
 
   return (
     <div style={S.page}>
@@ -379,6 +417,14 @@ function Hospitals() {
                     </div>
 
                     {/* Actions */}
+
+                     <button
+  style={S.detailsBtn}
+ onClick={() => setSelectedHospital(h)}
+ >
+  👁️ View Details
+</button>
+                    
                     <div style={S.actionRow}>
                       {h.phone ? (
                         <a href={`tel:${h.phone}`} style={S.callBtn}>📞 Call Now</a>
@@ -407,6 +453,216 @@ function Hospitals() {
             )}
           </div>
         </>
+      )}
+     {selectedHospital && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            zIndex: 9999,
+          }}
+          onClick={() => setSelectedHospital(null)}
+        >
+          <div
+            style={{
+              background: 'white',
+              width: '100%',
+              maxWidth: '600px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              borderRadius: '20px',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.25)',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div
+              style={{
+                padding: '22px',
+                borderBottom: '1px solid #e2e8f0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+              }}
+            >
+              <div>
+                <div style={{ marginBottom: '8px' }}>
+                  <span style={S.typeBadge('#dcfce7', '#166534')}>
+                    {selectedHospital.hospital_type}
+                  </span>
+
+                  {selectedHospital.emergency_available && (
+                    <span style={S.typeBadge('#fee2e2', '#dc2626')}>
+                      🚨 Emergency
+                    </span>
+                  )}
+                </div>
+
+                <h2
+                  style={{
+                    margin: 0,
+                    color: '#1e293b',
+                    fontSize: '22px',
+                    fontWeight: '900',
+                  }}
+                >
+                  {selectedHospital.name}
+                </h2>
+
+                <p
+                  style={{
+                    color: '#64748b',
+                    fontSize: '14px',
+                    margin: '8px 0 0',
+                  }}
+                >
+                  📍 {selectedHospital.address}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelectedHospital(null)}
+                style={{
+                  border: 'none',
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  fontWeight: '700',
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ padding: '20px' }}>
+              <div style={S.infoRow}>
+                <div style={S.infoBox}>
+                  <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 4px' }}>
+                    Distance
+                  </p>
+                  <p style={{ fontWeight: '800', margin: 0, color: '#059669' }}>
+                    {selectedHospital.distance_km} km
+                  </p>
+                </div>
+
+                <div style={S.infoBox}>
+                  <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 4px' }}>
+                    Travel Time
+                  </p>
+                  <p style={{ fontWeight: '800', margin: 0, color: '#1e293b' }}>
+                    {selectedHospital.estimated_travel_time}
+                  </p>
+                </div>
+              </div>
+
+              <div style={S.infoRow}>
+                <div style={S.infoBox}>
+                  <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 4px' }}>
+                    Rating
+                  </p>
+                  <p style={{ fontWeight: '800', margin: 0, color: '#1e293b' }}>
+                    {getStars(selectedHospital.rating)} {selectedHospital.rating}/5
+                  </p>
+                </div>
+
+                <div style={S.infoBox}>
+                  <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 4px' }}>
+                    Beds Available
+                  </p>
+                  <p style={{ fontWeight: '800', margin: 0, color: '#1e293b' }}>
+                    {selectedHospital.beds_available || 'Not Available'}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: '#f8fafc',
+                  borderRadius: '12px',
+                  padding: '14px',
+                  marginBottom: '14px',
+                }}
+              >
+                <p
+                  style={{
+                    margin: '0 0 6px',
+                    fontSize: '12px',
+                    fontWeight: '800',
+                    color: '#64748b',
+                  }}
+                >
+                  🕐 OPEN HOURS
+                </p>
+                <p style={{ margin: 0, fontWeight: '700', color: '#1e293b' }}>
+                  {selectedHospital.open_hours || 'Not Available'}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '18px' }}>
+                <p
+                  style={{
+                    margin: '0 0 8px',
+                    fontSize: '12px',
+                    fontWeight: '800',
+                    color: '#64748b',
+                  }}
+                >
+                  🏥 FACILITIES
+                </p>
+
+                {selectedHospital.facilities?.length ? (
+                  selectedHospital.facilities.map((facility, index) => (
+                    <span key={index} style={S.facilityChip}>
+                      {facility}
+                    </span>
+                  ))
+                ) : (
+                  <span style={{ color: '#94a3b8', fontSize: '13px' }}>
+                    No facility information available
+                  </span>
+                )}
+              </div>
+
+              <div style={S.actionRow}>
+                {selectedHospital.phone ? (
+                  <a
+                    href={`tel:${selectedHospital.phone}`}
+                    style={S.callBtn}
+                  >
+                    📞 Call Hospital
+                  </a>
+                ) : (
+                  <div
+                    style={{
+                      ...S.callBtn,
+                      opacity: 0.5,
+                      cursor: 'default',
+                    }}
+                  >
+                    📞 No Phone
+                  </div>
+                )}
+
+                <a
+                  href={`https://maps.google.com/?q=${selectedHospital.latitude},${selectedHospital.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={S.mapBtn}
+                >
+                  🗺️ Directions
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

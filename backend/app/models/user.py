@@ -106,5 +106,7 @@ class UserModel(BaseModel):
     longitude: Optional[float] = None
     role: str = "patient"
     is_active: bool = True
+    followup_status: str = "pending"
+    last_visit: Optional[datetime]= None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)   

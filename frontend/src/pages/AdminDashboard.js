@@ -99,12 +99,27 @@ function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [patients, setPatients] = useState([]);
   const [villages, setVillages] = useState([]);
+  const [emergencyPatients, setEmergencyPatients] = useState([]);
   const [trends, setTrends] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [patientDetail, setPatientDetail] = useState(null);
   const [searchText, setSearchText] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+useEffect(() => {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  return () => document.head.removeChild(style);
+}, []);
 
   useEffect(() => {
     loadData();
@@ -112,17 +127,21 @@ function AdminDashboard() {
 
   const loadData = async () => {
     try {
-      const [statsRes, patientsRes, trendsRes, villagesRes] = await Promise.allSettled([
-        adminAPI.getStats(),
-        adminAPI.getPatients(0, 50),
-        adminAPI.getTriageTrends(),
-        adminAPI.getVillageStats(),
-      ]);
+      const [statsRes, patientsRes, trendsRes, villagesRes, emergencyRes] =
+  await Promise.allSettled([
+    adminAPI.getStats(),
+    adminAPI.getPatients(0, 50),
+    adminAPI.getTriageTrends(),
+    adminAPI.getVillageStats(),
+    adminAPI.getEmergency(),
+  ]);
 
       if (statsRes.status === 'fulfilled') setStats(statsRes.value.data.stats);
       if (patientsRes.status === 'fulfilled') setPatients(patientsRes.value.data.patients || []);
       if (trendsRes.status === 'fulfilled') setTrends(trendsRes.value.data.trends || {});
       if (villagesRes.status === 'fulfilled') setVillages(villagesRes.value.data.villages || []);
+      if (emergencyRes.status === 'fulfilled')
+  setEmergencyPatients(emergencyRes.value.data.patients || []);
     } catch (err) {
       console.log('Admin load error:', err);
     } finally {
@@ -142,6 +161,22 @@ function AdminDashboard() {
       setDetailLoading(false);
     }
   };
+  const updateFollowup = async (patientId, status) => {
+  try {
+    await adminAPI.updateFollowup(patientId, status);
+    setSuccessMsg("✅ Follow-up updated successfully");
+    setTimeout(() => setSuccessMsg(''), 2500);
+
+    await loadData();
+
+    const res = await adminAPI.getPatientDetail(patientId);
+    setPatientDetail(res.data);
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   const totalTriage = (trends.emergency || 0) + (trends['visit-clinic'] || 0) + (trends['self-care'] || 0);
   const emergencyPct = totalTriage ? ((trends.emergency || 0) / totalTriage * 100) : 0;
@@ -308,6 +343,30 @@ function AdminDashboard() {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
                       <span style={{ background: '#f1f5f9', color: '#64748b', padding: '3px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' }}>
                         {p.triage_count} checkups
+                        {p.followup_status === "visited" ? (
+  <span style={{
+    background:"#dcfce7",
+    color:"#166534",
+    padding:"2px 8px",
+    borderRadius:"8px",
+    fontSize:"10px",
+    fontWeight:"700"
+  }}>
+    ✅ Visited
+  </span>
+) : (
+  <span style={{
+    background:"#fef3c7",
+    color:"#92400e",
+    padding:"2px 8px",
+    borderRadius:"8px",
+    fontSize:"10px",
+    fontWeight:"700"
+  }}>
+    ⏳ Pending
+  </span>
+)}
+
                       </span>
                       {urgStyle && (
                         <span style={{ background: urgStyle.bg, color: urgStyle.color, padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' }}>
@@ -355,6 +414,48 @@ function AdminDashboard() {
               )}
             </div>
           </div>
+          {/* Emergency Patients */}
+<div style={{
+  background: '#fef2f2',
+  border: '2px solid #fecaca',
+  borderRadius: '18px',
+  padding: '18px'
+}}>
+  <p style={{
+    fontWeight: '800',
+    color: '#dc2626',
+    fontSize: '15px',
+    margin: '0 0 12px 0'
+  }}>
+    🚨 Emergency Patients
+  </p>
+
+  {emergencyPatients.length === 0 ? (
+    <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>
+      No emergency cases
+    </p>
+  ) : (
+    emergencyPatients.map((p, i) => (
+      <div key={i} style={{
+        background: 'white',
+        borderRadius: '12px',
+        padding: '10px',
+        marginBottom: '8px',
+        border: '1px solid #fecaca'
+      }}>
+        <p style={{ fontWeight: '700', color: '#1e293b', margin: '0 0 2px 0' }}>
+          {p.full_name}
+        </p>
+        <p style={{ color: '#64748b', fontSize: '11px', margin: '0 0 4px 0' }}>
+          📍 {p.village}
+        </p>
+        <p style={{ color: '#dc2626', fontSize: '11px', margin: 0 }}>
+          {p.symptoms}
+        </p>
+      </div>
+    ))
+  )}
+</div>
 
           {/* Emergency Contacts */}
           <div style={{ background: '#fff1f2', border: '2px solid #fca5a5', borderRadius: '18px', padding: '20px' }}>
@@ -376,6 +477,46 @@ function AdminDashboard() {
               </div>
             ))}
           </div>
+
+          {/* Community Health Analytics */}
+<div style={S.card}>
+  <div style={S.cardHeader('linear-gradient(135deg,#2563eb,#1d4ed8)')}>
+    <p style={S.cardHeaderTitle}>📊 Community Health Analytics</p>
+  </div>
+
+  <div style={{padding:'18px'}}>
+    {[
+      {label:'Emergency', value: trends.emergency || 0, color:'#dc2626'},
+      {label:'Visit Clinic', value: trends['visit-clinic'] || 0, color:'#d97706'},
+      {label:'Self Care', value: trends['self-care'] || 0, color:'#16a34a'},
+    ].map((item,i)=>(
+      <div key={i} style={{marginBottom:'14px'}}>
+        <div style={{
+          display:'flex',
+          justifyContent:'space-between',
+          fontSize:'12px',
+          marginBottom:'4px'
+        }}>
+          <span>{item.label}</span>
+          <b>{item.value}</b>
+        </div>
+
+        <div style={{
+          height:'10px',
+          background:'#e5e7eb',
+          borderRadius:'999px'
+        }}>
+          <div style={{
+            width:`${Math.max(item.value*20,8)}%`,
+            height:'100%',
+            background:item.color,
+            borderRadius:'999px'
+          }}/>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
           {/* ASHA Info */}
           <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: '16px', padding: '18px' }}>
@@ -464,6 +605,21 @@ function AdminDashboard() {
                   )}
 
                   {/* Triage History */}
+                  <div style={{ marginBottom: '16px' }}>
+  <button
+    onClick={() => updateFollowup(patientDetail.patient.id, "visited")}
+    style={{
+      background:"#16a34a",
+      color:"#fff",
+      border:"none",
+      padding:"8px 14px",
+      borderRadius:"8px",
+      cursor:"pointer"
+    }}
+  >
+    ✅ Mark as Visited
+  </button>
+</div>
                   <p style={{ fontWeight: '800', color: '#1e293b', fontSize: '15px', margin: '0 0 12px 0' }}>📋 Triage History</p>
                   {patientDetail.triage_history?.length > 0 ? (
                     patientDetail.triage_history.slice(0, 5).map((t, i) => {
@@ -487,6 +643,21 @@ function AdminDashboard() {
               </>
             ) : null}
           </div>
+        </div>
+      )}
+      {successMsg && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: '#16a34a',
+          color: 'white',
+          padding: '12px 18px',
+          borderRadius: '10px',
+          fontWeight: '700',
+          zIndex: 3000
+        }}>
+          {successMsg}
         </div>
       )}
 

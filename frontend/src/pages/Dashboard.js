@@ -204,7 +204,7 @@ const quickActions = [
   { icon: '🏨', title: 'Find Hospital', desc: 'Nearby hospitals', link: '/hospitals', gradient: 'linear-gradient(135deg, #059669, #047857)', bg: '#f0fdf4', border: '#bbf7d0' },
   { icon: '📄', title: 'Upload Report', desc: 'Analyze reports', link: '/reports', gradient: 'linear-gradient(135deg, #7c3aed, #5b21b6)', bg: '#faf5ff', border: '#e9d5ff' },
   { icon: '📋', title: 'View History', desc: 'Past checkups', link: '/history', gradient: 'linear-gradient(135deg, #ea580c, #c2410c)', bg: '#fff7ed', border: '#fed7aa' },
-  { icon: '💊', title: 'Medicine Info', desc: 'Drug details', link: '/symptom-checker', gradient: 'linear-gradient(135deg, #db2777, #9d174d)', bg: '#fdf2f8', border: '#fbcfe8' },
+  { icon: '💊', title: 'Medicine Guide', desc: 'Medicine information', link: '/symptom-checker', gradient: 'linear-gradient(135deg, #db2777, #9d174d)', bg: '#fdf2f8', border: '#fbcfe8' },
   { icon: '👤', title: 'My Profile', desc: 'Health data', link: '/profile', gradient: 'linear-gradient(135deg, #0891b2, #0e7490)', bg: '#f0fdfa', border: '#99f6e4' },
 ];
 
@@ -256,22 +256,22 @@ function Dashboard() {
               {timeOfDay} 👋
             </p>
             <h1 style={S.welcomeTitle}>{user.full_name || 'User'}</h1>
-            <p style={S.welcomeSub}>Your AI health assistant is ready to help you</p>
+            <p style={S.welcomeSub}>Your personal AI-assisted health companion</p>
           </div>
           <span style={{ fontSize: '56px', opacity: 0.6 }}>🏥</span>
         </div>
         <div style={S.statsRow}>
           <div style={S.statBox}>
             <p style={S.statNum}>{stats.triage}</p>
-            <p style={S.statLabel}>Checkups Done</p>
+            <p style={S.statLabel}>Symptoms Checks</p>
           </div>
           <div style={S.statBox}>
             <p style={S.statNum}>{stats.reports}</p>
-            <p style={S.statLabel}>Reports Analyzed</p>
+            <p style={S.statLabel}>Medical Reports</p>
           </div>
           <div style={S.statBox}>
             <p style={S.statNum}>{stats.hospitals}+</p>
-            <p style={S.statLabel}>Hospitals Nearby</p>
+            <p style={S.statLabel}>Hospitals Available</p>
           </div>
         </div>
       </div>
@@ -280,7 +280,7 @@ function Dashboard() {
       <div style={S.emergencyBanner}>
         <div style={S.emergencyIcon}>🚨</div>
         <div>
-          <p style={S.emergencyTitle}>Emergency Helplines</p>
+          <p style={S.emergencyTitle}>24x7 Emergency Helplines</p>
           <p style={S.emergencyDesc}>Ambulance: <strong>108</strong> | Medical: <strong>102</strong> | Police: <strong>100</strong> | Fire: <strong>101</strong></p>
         </div>
         <a href="tel:108" style={S.callBtn}>📞 Call 108</a>
@@ -308,7 +308,7 @@ function Dashboard() {
 
           {/* Health Tips */}
           <div style={S.tipsCard}>
-            <p style={S.sectionTitle}>💡 Daily Health Tips</p>
+            <p style={S.sectionTitle}>💡 Healthy Living Tips</p>
             {[
               { icon: '💧', tip: 'Drink 8-10 glasses of water daily to stay hydrated', bg: '#eff6ff', border: '#bfdbfe' },
               { icon: '🥗', tip: 'Eat fresh fruits and vegetables for essential vitamins and minerals', bg: '#f0fdf4', border: '#bbf7d0' },
@@ -331,7 +331,7 @@ function Dashboard() {
             <div style={{ fontSize: '44px', marginBottom: '12px' }}>🩺</div>
             <h3 style={{ fontWeight: '800', fontSize: '18px', margin: '0 0 8px 0' }}>Check Your Symptoms</h3>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: 0 }}>
-              Get AI-powered triage and medical guidance instantly
+              Describe your symptoms and receive instant AI-assisted health guidance
             </p>
             <Link to="/symptom-checker" style={S.checkupBtn}>
               Start Checkup →
@@ -360,7 +360,13 @@ function Dashboard() {
                         {record.symptoms}
                       </p>
                       <p style={{ fontSize: '11px', color: '#94a3b8', margin: 0 }}>
-                        {record.created_at ? record.created_at.substring(0, 10) : ''}
+                        {record.created_at
+  ? new Date(record.created_at).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+  : '—'}
                       </p>
                     </div>
                     <span style={{
@@ -376,8 +382,8 @@ function Dashboard() {
             ) : (
               <div style={{ textAlign: 'center', padding: '20px 0' }}>
                 <p style={{ fontSize: '32px', margin: '0 0 8px 0' }}>📭</p>
-                <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>No history yet</p>
-                <Link to="/symptom-checker" style={{ color: '#059669', fontSize: '12px' }}>Do your first checkup</Link>
+                <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>No recent symptoms Checks</p>
+                <Link to="/symptom-checker" style={{ color: '#059669', fontSize: '12px' }}>Check symptoms now</Link>
               </div>
             )}
           </div>
@@ -412,8 +418,8 @@ function Dashboard() {
 
       {/* Disclaimer */}
       <div style={S.disclaimer}>
-        <strong>⚠️ Medical Disclaimer:</strong> HealthMitra provides AI-based guidance only.
-        It is NOT a substitute for professional medical advice. Always consult a qualified doctor.
+        <strong>⚠️ Medical Disclaimer:</strong> AroNexa provides AI-assisted health information for educational purposes only. 
+        It does not replace professional medical diagnosis or treatment.
       </div>
     </div>
   );

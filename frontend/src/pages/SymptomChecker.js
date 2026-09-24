@@ -552,7 +552,7 @@ function SymptomChecker() {
 
           {/* Symptoms */}
           <div style={S.cardSection}>
-            <p style={S.sectionLabel}>📝 Describe Your Symptoms</p>
+            <p style={S.sectionLabel}>📝Tell Us your symptoms , when they started, and how you feel...</p>
             <textarea
               value={symptoms}
               onChange={e => setSymptoms(e.target.value)}
@@ -566,9 +566,9 @@ function SymptomChecker() {
               <button onClick={isListening ? stopListening : startListening}
                 style={S.voiceBtn(isListening)}>
                 {isListening ? (
-                  <><span style={{ width: '10px', height: '10px', background: 'white', borderRadius: '2px', display: 'inline-block' }}></span> Stop Recording</>
+                  <><span style={{ width: '10px', height: '10px', background: 'white', borderRadius: '2px', display: 'inline-block' }}></span> Stop Listening </>
                 ) : (
-                  <><span>🎤</span> Voice Input</>
+                  <><span>🎤</span> Speak Symptoms </>
                 )}
               </button>
               {isListening && (
@@ -599,7 +599,7 @@ function SymptomChecker() {
             }}>
               {locationStatus === 'detecting' && 'Detecting your location...'}
               {locationStatus === 'granted' && `GPS Location: ${location.latitude.toFixed(4)}°N, ${location.longitude.toFixed(4)}°E — nearby hospitals will be shown`}
-              {locationStatus === 'ip_fallback' && `Approximate location via IP (${location.latitude.toFixed(2)}°N) — for accurate results, allow GPS access`}
+              {locationStatus === 'ip_fallback' && `Using approximate location (${location.latitude.toFixed(2)}°N) — for accurate results, allow GPS access`}
               {locationStatus === 'denied' && 'Location not available — enable GPS for nearby hospital recommendations'}
             </span>
             {(locationStatus === 'denied' || locationStatus === 'ip_fallback') && (
@@ -641,7 +641,7 @@ function SymptomChecker() {
           {/* Sample Symptoms */}
           <div style={S.sampleCard}>
             <p style={{ fontWeight: '800', fontSize: '14px', color: '#374151', margin: '0 0 6px 0' }}>💬 Quick Examples</p>
-            <p style={{ color: '#94a3b8', fontSize: '12px', margin: '0 0 12px 0' }}>Click to auto-fill:</p>
+            <p style={{ color: '#94a3b8', fontSize: '12px', margin: '0 0 12px 0' }}>Click to try an example:</p>
             {sampleSymptoms.map((s, i) => (
               <button key={i} onClick={() => setSymptoms(s)} style={S.sampleBtn}
                 onMouseEnter={e => { e.target.style.background = '#f0fdf4'; e.target.style.borderColor = '#86efac'; e.target.style.color = '#166534'; }}
@@ -662,7 +662,7 @@ function SymptomChecker() {
           {/* Disclaimer */}
           <div style={S.disclaimerCard}>
             <p style={{ fontWeight: '800', color: '#92400e', fontSize: '12px', margin: '0 0 4px 0' }}>⚠️ Disclaimer</p>
-            <p style={{ color: '#78350f', fontSize: '11px', margin: 0 }}>AI screening only. Not a medical diagnosis. Always consult a doctor.</p>
+            <p style={{ color: '#78350f', fontSize: '11px', margin: 0 }}>AI guidance is for information only, not a medical diagnosis. Consult a healthcare professional when needed.</p>
           </div>
         </div>
       </div>
@@ -680,7 +680,7 @@ function SymptomChecker() {
                     <div>
                       <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: '0 0 4px 0' }}>AI Triage Result</p>
                       <h2 style={S.urgencyTitle}>{cfg.label}</h2>
-                      <p style={S.urgencySub}>Confidence: {(result.confidence * 100).toFixed(0)}%</p>
+                      <p style={S.urgencySub}>AI assesment based on the syptoms you provided</p>
                     </div>
                   </div>
                   <button onClick={() => speakText(`Your triage level is ${result.urgency_level}. ${result.when_to_see_doctor}`)}
@@ -719,7 +719,7 @@ function SymptomChecker() {
             <div style={S.resultCard}>
               <div style={S.resultCardTitle}>
                 <div style={S.resultCardIcon('#e9d5ff')}>🏥</div>
-                <p style={S.resultCardLabel}>Possible Conditions</p>
+                <p style={S.resultCardLabel}>Possible Health Conditions</p>
               </div>
               <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
                 {result.possible_conditions?.map((c, i) => (
@@ -775,10 +775,9 @@ function SymptomChecker() {
                 {result.medicines_info.map((med, i) => (
                   <div key={i} style={S.medCard}>
                     <p style={{ fontWeight: '800', color: '#1e293b', fontSize: '13px', margin: '0 0 6px 0' }}>{med.name}</p>
-                    <p style={{ color: '#64748b', fontSize: '12px', margin: '0 0 6px 0' }}>📏 {med.dosage}</p>
                     <span style={med.type === 'OTC' ? S.otcBadge : S.rxBadge}>
-                      {med.type === 'OTC' ? '🏪 Over-the-Counter' : '📋 Prescription'}
-                    </span>
+  {med.type === 'OTC' ? '🏪 General Information' : '📋 Prescription Medicine'}
+</span>
                   </div>
                 ))}
               </div>
