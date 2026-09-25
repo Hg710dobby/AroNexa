@@ -1,4 +1,5 @@
 import os
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 
@@ -22,7 +23,6 @@ async def connect_to_database():
         )
 
         database = client[DATABASE_NAME]
-
         await client.admin.command("ping")
         print(f"Connected to MongoDB: {DATABASE_NAME}")
 
