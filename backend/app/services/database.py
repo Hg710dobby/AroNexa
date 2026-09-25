@@ -12,22 +12,25 @@ database = None
 
 
 async def connect_to_database():
-    """Connect to MongoDB"""
     global client, database
     try:
-        client = AsyncIOMotorClient(MONGODB_URL)
+        client = AsyncIOMotorClient(
+            MONGODB_URL,
+            tls=True,
+            tlsAllowInvalidCertificates=False,
+            serverSelectionTimeoutMS=30000
+        )
+
         database = client[DATABASE_NAME]
-        # Test the connection
-        await client.admin.command('ping')
+
+        await client.admin.command("ping")
         print(f"Connected to MongoDB: {DATABASE_NAME}")
 
-        # Create indexes
         await create_indexes()
 
     except Exception as e:
         print(f"Failed to connect to MongoDB: {e}")
         raise e
-
 
 async def create_indexes():
     """Create database indexes for performance"""
