@@ -11,7 +11,6 @@ DATABASE_NAME = os.getenv("DATABASE_NAME", "AroNexa")
 client = None
 database = None
 
-
 async def connect_to_database():
     global client, database
     try:
@@ -19,6 +18,7 @@ async def connect_to_database():
             MONGODB_URL,
             tls=True,
             tlsCAFile=certifi.where(),
+            retryWrites=True,
             serverSelectionTimeoutMS=30000
         )
 
