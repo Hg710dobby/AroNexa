@@ -20,7 +20,7 @@ class UserCreate(BaseModel):
     current_medicines: Optional[List[str]] = []
     emergency_contact: Optional[str] = ""
     pregnancy_status: Optional[bool] = False
-    role: str = Field(default="patient", pattern="^(patient|admin)$")
+    role: str = Field(default="patient",pattern="^(patient|asha_worker|admin)$")
 
     class Config:
         json_schema_extra = {
@@ -39,7 +39,8 @@ class UserCreate(BaseModel):
                 "allergies": ["penicillin"],
                 "current_medicines": ["metformin"],
                 "emergency_contact": "9876543211",
-                "pregnancy_status": False
+                "pregnancy_status": False,
+                "role":"patient"
             }
         }
 

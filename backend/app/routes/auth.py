@@ -60,17 +60,19 @@ async def login(credentials: UserLogin):
         )
 
         return {
-            "message": "Login successful",
-            "access_token": token,
-            "token_type": "bearer",
-            "user": {
-                "id": str(user["_id"]),
-                "full_name": user["full_name"],
-                "email": user["email"],
-                "preferred_language": user.get("preferred_language", "english"),
-                "role": user.get("role", "patient")
-            }
-        }
+    "message": "Login successful",
+    "access_token": token,
+    "token_type": "bearer",
+    "user": {
+        "id": str(user["_id"]),
+        "full_name": user["full_name"],
+        "email": user["email"],
+        "preferred_language": user.get("preferred_language", "english"),
+        "village": user.get("village", ""),
+        "district": user.get("district", ""),
+        "role": user.get("role", "patient")
+    }
+}
 
     except HTTPException:
         raise

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AshaRegister from './pages/AshaRegister';
 import Dashboard from './pages/Dashboard';
 import SymptomChecker from './pages/SymptomChecker';
 import Hospitals from './pages/Hospitals';
@@ -44,6 +45,8 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/asha-register" element={<AshaRegister />} />
+
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/symptom-checker" element={<ProtectedRoute><SymptomChecker /></ProtectedRoute>} />
           <Route path="/hospitals" element={<ProtectedRoute><Hospitals /></ProtectedRoute>} />
@@ -51,6 +54,7 @@ function App() {
           <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

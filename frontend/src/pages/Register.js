@@ -186,7 +186,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const isAdmin = formData.role === 'admin';
+  const isAdmin = formData.role === 'asha worker';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -232,7 +232,7 @@ function Register() {
       }));
 
       // Route based on role
-      if (formData.role === 'admin') {
+      if (formData.role === 'asha worker') {
         navigate('/admin');
       } else {
         navigate('/dashboard');
@@ -261,7 +261,7 @@ function Register() {
           <div style={S.roleSelector}>
             <div
               style={S.roleCard(formData.role === 'patient', false)}
-              onClick={() => setFormData({ ...formData, role: 'patient' })}
+              onClick={() => setFormData({ ...formData, role: 'asha worker' })}
             >
               <p style={{ fontSize: '36px', margin: '0 0 8px 0' }}>🧑‍🤝‍🧑</p>
               <p style={{ fontWeight: '800', color: formData.role === 'patient' ? '#059669' : '#374151', fontSize: '15px', margin: '0 0 4px 0' }}>
@@ -272,11 +272,11 @@ function Register() {
               </p>
             </div>
             <div
-              style={S.roleCard(formData.role === 'admin', true)}
+              style={S.roleCard(formData.role === 'asha worker', true)}
               onClick={() => setFormData({ ...formData, role: 'admin' })}
             >
               <p style={{ fontSize: '36px', margin: '0 0 8px 0' }}>👩‍⚕️</p>
-              <p style={{ fontWeight: '800', color: formData.role === 'admin' ? '#7c3aed' : '#374151', fontSize: '15px', margin: '0 0 4px 0' }}>
+              <p style={{ fontWeight: '800', color: formData.role === 'asha worker' ? '#7c3aed' : '#374151', fontSize: '15px', margin: '0 0 4px 0' }}>
                 ASHA Worker
               </p>
               <p style={{ color: '#94a3b8', fontSize: '11px', margin: 0 }}>
