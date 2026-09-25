@@ -18,7 +18,7 @@ async def connect_to_database():
         client = AsyncIOMotorClient(
             MONGODB_URL,
             tls=True,
-            tlsAllowInvalidCertificates=False,
+            tlsCAFile=certifi.where(),
             serverSelectionTimeoutMS=30000
         )
 
