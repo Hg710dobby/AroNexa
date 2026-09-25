@@ -274,8 +274,15 @@ function Login() {
             </form>
 
             <div style={S.linkRow}>
-              Don't have an account?{' '}
-              <Link to="/register" style={S.link}>Create Patient Account</Link>
+              <p>
+  Don't have an account?
+</p>
+
+<Link to="/register">Create Patient Account</Link>
+
+<br />
+
+<Link to="/asha-register">Register as ASHA Worker</Link>
             </div>
           </div>
         </div>
