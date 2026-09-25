@@ -4,8 +4,9 @@ uvicorn==0.24.0
 python-multipart==0.0.6
 
 # Database
-pymongo==4.6.1
-motor==3.3.2
+pymongo[srv]==4.10.1
+motor==3.6.0
+dnspython==2.7.0
 
 # Auth
 python-jose[cryptography]==3.3.0
@@ -17,5 +18,5 @@ pydantic==2.5.3
 # PDF Processing
 PyMuPDF==1.23.8
 
-# HTTP Requests (Groq API)
+# HTTP Requests
 requests==2.31.0
