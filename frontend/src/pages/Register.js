@@ -252,8 +252,8 @@ function Register() {
       <div style={S.container}>
         <div style={S.logoSection}>
           <div style={S.logoIcon}>🏥</div>
-          <h1 style={S.logoTitle}>Join Health<span style={{ color: '#059669' }}>Mitra</span></h1>
-          <p style={S.logoSub}>Create your AI-assisted healthcare account</p>
+          <h1 style={S.logoTitle}>Join AroNexa</h1>
+          <p style={S.logoSub}>Create your AI-powered healthcare account</p>
         </div>
 
         {/* Role Selection */}
