@@ -85,6 +85,7 @@ class UserResponse(BaseModel):
     emergency_contact: str = ""
     pregnancy_status: bool = False
     created_at: Optional[str] = None
+    role: str = "patient"
 
 
 class UserModel(BaseModel):

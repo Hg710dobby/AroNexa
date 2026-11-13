@@ -95,7 +95,11 @@ const S = {
 };
 
 function AdminDashboard() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = JSON.parse(localStorage.getItem("user") || "null") || {};
+
+if (!user || user.role !== "asha_worker") {
+  window.location.href = "/asha-login";
+}
   const [stats, setStats] = useState(null);
   const [patients, setPatients] = useState([]);
   const [villages, setVillages] = useState([]);
@@ -342,31 +346,18 @@ useEffect(() => {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
                       <span style={{ background: '#f1f5f9', color: '#64748b', padding: '3px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' }}>
-                        {p.triage_count} checkups
-                        {p.followup_status === "visited" ? (
-  <span style={{
-    background:"#dcfce7",
-    color:"#166534",
-    padding:"2px 8px",
-    borderRadius:"8px",
-    fontSize:"10px",
-    fontWeight:"700"
-  }}>
+                        
+                       {p.triage_count} checkups
+<br />
+{p.followup_status === "visited" ? (
+  <span style={{ color:"#16a34a", fontWeight:"700" }}>
     ✅ Visited
   </span>
 ) : (
-  <span style={{
-    background:"#fef3c7",
-    color:"#92400e",
-    padding:"2px 8px",
-    borderRadius:"8px",
-    fontSize:"10px",
-    fontWeight:"700"
-  }}>
+  <span style={{ color:"#d97706", fontWeight:"700" }}>
     ⏳ Pending
   </span>
 )}
-
                       </span>
                       {urgStyle && (
                         <span style={{ background: urgStyle.bg, color: urgStyle.color, padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' }}>
@@ -607,7 +598,8 @@ useEffect(() => {
                   {/* Triage History */}
                   <div style={{ marginBottom: '16px' }}>
   <button
-    onClick={() => updateFollowup(patientDetail.patient.id, "visited")}
+  disabled={patientDetail.patient?.followup_status === "visited"}
+  onClick={() => updateFollowup(patientDetail.patient.id, "visited")}
     style={{
       background:"#16a34a",
       color:"#fff",
@@ -617,7 +609,9 @@ useEffect(() => {
       cursor:"pointer"
     }}
   >
-    ✅ Mark as Visited
+   {patientDetail.patient?.followup_status === "visited"
+  ? "Visited"
+  : "Mark as Visited"}
   </button>
 </div>
                   <p style={{ fontWeight: '800', color: '#1e293b', fontSize: '15px', margin: '0 0 12px 0' }}>📋 Triage History</p>

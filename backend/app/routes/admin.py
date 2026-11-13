@@ -11,7 +11,7 @@ async def require_admin(current_user: dict = Depends(get_current_user)):
     db = get_database()
     user = await db.users.find_one({"email": current_user["email"]})
 
-    if not user or user.get("role") != "admin":
+    if not user or user.get("role") not in ["admin", "asha_worker"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied. Admin/ASHA Worker role required."

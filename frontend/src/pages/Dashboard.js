@@ -204,7 +204,7 @@ const quickActions = [
   { icon: '🏨', title: 'Find Hospital', desc: 'Nearby hospitals', link: '/hospitals', gradient: 'linear-gradient(135deg, #059669, #047857)', bg: '#f0fdf4', border: '#bbf7d0' },
   { icon: '📄', title: 'Upload Report', desc: 'Analyze reports', link: '/reports', gradient: 'linear-gradient(135deg, #7c3aed, #5b21b6)', bg: '#faf5ff', border: '#e9d5ff' },
   { icon: '📋', title: 'View History', desc: 'Past checkups', link: '/history', gradient: 'linear-gradient(135deg, #ea580c, #c2410c)', bg: '#fff7ed', border: '#fed7aa' },
-  { icon: '💊', title: 'Medicine Guide', desc: 'Medicine information', link: '/symptom-checker', gradient: 'linear-gradient(135deg, #db2777, #9d174d)', bg: '#fdf2f8', border: '#fbcfe8' },
+  { icon: '💊', title: 'Medicine Guide', desc: 'Medicine information', link: '/history', gradient: 'linear-gradient(135deg, #db2777, #9d174d)', bg: '#fdf2f8', border: '#fbcfe8' },
   { icon: '👤', title: 'My Profile', desc: 'Health data', link: '/profile', gradient: 'linear-gradient(135deg, #0891b2, #0e7490)', bg: '#f0fdfa', border: '#99f6e4' },
 ];
 
@@ -255,7 +255,7 @@ function Dashboard() {
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: '0 0 6px 0' }}>
               {timeOfDay} 👋
             </p>
-            <h1 style={S.welcomeTitle}>{user.full_name || 'User'}</h1>
+            <h1 style={S.welcomeTitle}>{user.full_name || 'Patient'}</h1>
             <p style={S.welcomeSub}>Your personal AI-assisted health companion</p>
           </div>
           <span style={{ fontSize: '56px', opacity: 0.6 }}>🏥</span>
@@ -270,8 +270,11 @@ function Dashboard() {
             <p style={S.statLabel}>Medical Reports</p>
           </div>
           <div style={S.statBox}>
-            <p style={S.statNum}>{stats.hospitals}+</p>
-            <p style={S.statLabel}>Hospitals Available</p>
+            <p style={S.statNum}>
+  {user.preferred_language?.charAt(0).toUpperCase() +
+   user.preferred_language?.slice(1) || 'English'}
+</p>
+<p style={S.statLabel}>Preferred Language</p>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ class AdminService:
 
         total_users = await db.users.count_documents({})
         total_patients = await db.users.count_documents({"role": "patient"})
-        total_admins = await db.users.count_documents({"role": "admin"})
+        total_admins = await db.users.count_documents({"role": "asha_worker"})
         total_triage = await db.triage_records.count_documents({})
         total_reports = await db.reports.count_documents({})
         total_hospitals = await db.hospitals.count_documents({})

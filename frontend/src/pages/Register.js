@@ -173,20 +173,25 @@ const S = {
   disclaimer: { textAlign: 'center', color: '#94a3b8', fontSize: '11px', marginTop: '16px' },
 };
 
-function Register() {
+function Register({
+  defaultRole = "patient",
+  defaultLanguage = "english",
+  redirectPath = "/dashboard",
+  isAsha = false,
+}) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     full_name: '', email: '', password: '', phone: '',
     age: '', gender: 'male', village: '', district: '',
-    state: '', preferred_language: 'english',
+    state: '', preferred_language: defaultLanguage,
     known_diseases: '', allergies: '', emergency_contact: '',
-    role: 'patient'
+    role: defaultRole
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const isAdmin = formData.role === 'asha worker';
+  const isAdmin = formData.role === 'asha_worker';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -222,26 +227,34 @@ function Register() {
       pregnancy_status: false
       };
       const res = await authAPI.register(submitData);
-      localStorage.setItem('token', res.data.access_token);
-      localStorage.setItem('user', JSON.stringify({
-        id: res.data.user_id,
-        full_name: formData.full_name,
-        email: formData.email,
-        preferred_language: formData.preferred_language,
-        role: formData.role
-      }));
 
-      // Route based on role
-      if (formData.role === 'asha worker') {
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+const user = res.data.user || {
+  id: res.data.user_id,
+  full_name: formData.full_name,
+  email: formData.email,
+  village: formData.village,
+  district: formData.district,
+  role: formData.role
+};
+
+localStorage.setItem("token", res.data.access_token);
+localStorage.setItem("user", JSON.stringify(user));
+
+navigate(isAsha ? "/admin" : "/dashboard");
+      
+  } catch (err) {
+  console.log(err.response?.data);
+
+  const detail = err.response?.data?.detail;
+
+  if (Array.isArray(detail)) {
+    setError(detail[0].msg);
+  } else if (typeof detail === "string") {
+    setError(detail);
+  } else {
+    setError(JSON.stringify(err.response?.data));
+  }
+}
   };
 
   const inputFocus = (e) => { e.target.style.borderColor = isAdmin ? '#7c3aed' : '#059669'; e.target.style.boxShadow = `0 0 0 3px ${isAdmin ? 'rgba(124,58,237,0.1)' : 'rgba(5,150,105,0.1)'}`; };
@@ -257,11 +270,11 @@ function Register() {
         </div>
 
         {/* Role Selection */}
-        {step === 1 && (
+        {step === 1 && !isAsha && (
           <div style={S.roleSelector}>
             <div
               style={S.roleCard(formData.role === 'patient', false)}
-              onClick={() => setFormData({ ...formData, role: 'asha worker' })}
+              onClick={() => setFormData({ ...formData, role: 'patient' })}
             >
               <p style={{ fontSize: '36px', margin: '0 0 8px 0' }}>🧑‍🤝‍🧑</p>
               <p style={{ fontWeight: '800', color: formData.role === 'patient' ? '#059669' : '#374151', fontSize: '15px', margin: '0 0 4px 0' }}>
@@ -272,11 +285,11 @@ function Register() {
               </p>
             </div>
             <div
-              style={S.roleCard(formData.role === 'asha worker', true)}
-              onClick={() => setFormData({ ...formData, role: 'admin' })}
+              style={S.roleCard(formData.role === 'asha_worker', true)}
+              onClick={() => setFormData({ ...formData, role: 'asha_worker' })}
             >
               <p style={{ fontSize: '36px', margin: '0 0 8px 0' }}>👩‍⚕️</p>
-              <p style={{ fontWeight: '800', color: formData.role === 'asha worker' ? '#7c3aed' : '#374151', fontSize: '15px', margin: '0 0 4px 0' }}>
+              <p style={{ fontWeight: '800', color: formData.role === 'asha_worker' ? '#7c3aed' : '#374151', fontSize: '15px', margin: '0 0 4px 0' }}>
                 ASHA Worker
               </p>
               <p style={{ color: '#94a3b8', fontSize: '11px', margin: 0 }}>
@@ -414,7 +427,11 @@ function Register() {
 
             <div style={S.linkRow}>
               Already have an account?{' '}
-              <Link to="/login" style={S.link}>Login here</Link>
+              {isAsha ? (
+  <Link to="/asha-login" style={S.link}>ASHA Login</Link>
+) : (
+  <Link to="/login" style={S.link}>Patient Login</Link>
+)}
             </div>
           </div>
         </div>

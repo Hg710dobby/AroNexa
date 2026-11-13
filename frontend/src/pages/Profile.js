@@ -204,7 +204,11 @@ function Profile() {
         <div style={S.avatar}>{profile?.full_name?.charAt(0) || '?'}</div>
         <div>
           <h2 style={{ fontWeight: '900', fontSize: '24px', margin: '0 0 4px 0' }}>{profile?.full_name}</h2>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: '0 0 4px 0' }}>Aronexa Patient Account</p>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: '0 0 4px 0' }}>
+  {profile?.role?.toLowerCase() === 'asha_worker'
+    ? 'Aronexa ASHA Worker Account'
+    : 'Aronexa Patient Account'}
+</p>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', margin: 0 }}>
             📍 {profile?.village || 'Location'}, {profile?.district || 'District'}
           </p>

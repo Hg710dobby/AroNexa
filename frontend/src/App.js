@@ -4,7 +4,9 @@ import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AshaLogin from './pages/AshaLogin';
 import AshaRegister from './pages/AshaRegister';
+import RoleSelect from './pages/RoleSelect';
 import Dashboard from './pages/Dashboard';
 import SymptomChecker from './pages/SymptomChecker';
 import Hospitals from './pages/Hospitals';
@@ -28,7 +30,7 @@ function AdminRoute({ children }) {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   if (!token) return <Navigate to="/login" />;
-  if (user.role !== 'admin') return <Navigate to="/dashboard" />;
+  if (user.role !== 'asha_worker') return <Navigate to="/dashboard" />;
   return (
     <>
       <Navbar />
@@ -44,9 +46,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/asha-login" element={<AshaLogin />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/asha-register" element={<AshaRegister />} />
-
+          <Route path="/asha-register" element={<AshaRegister/>}/>
+          <Route path="/role-select" element={<RoleSelect />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/symptom-checker" element={<ProtectedRoute><SymptomChecker /></ProtectedRoute>} />
           <Route path="/hospitals" element={<ProtectedRoute><Hospitals /></ProtectedRoute>} />

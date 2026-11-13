@@ -134,7 +134,8 @@ const adminLinks = [
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+ const userData = localStorage.getItem("user");
+const user = userData ? JSON.parse(userData) : null;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
 
@@ -144,14 +145,17 @@ useEffect(() => {
   return () => window.removeEventListener('resize', handleResize);
 }, []);
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'asha_worker';
   const navLinks = isAdmin ? adminLinks : patientLinks;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
+  const isAsha = user?.role === "asha_worker";
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  navigate(isAsha ? "/asha-login" : "/login");
+};
 
   if (!user) return null;
 
@@ -193,7 +197,7 @@ useEffect(() => {
               {user?.full_name?.split(' ')[0] || 'User'}
             </span>
             <span style={S.roleBadge(isAdmin)}>
-              {isAdmin ? 'ASHA' : 'Patient'}
+              {isAdmin ? 'ASHA WORKER' : 'PATIENT'}
             </span>
           </div>
 

@@ -44,6 +44,8 @@ class AuthService:
             "pregnancy_status": user_data.pregnancy_status or False,
             "role": user_data.role or "patient",
             "is_active": True,
+            "followup_status":"pending",
+            "last_visit": None,
             "latitude": None,
             "longitude": None,
             "created_at": datetime.utcnow(),

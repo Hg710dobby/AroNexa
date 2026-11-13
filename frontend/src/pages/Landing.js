@@ -407,6 +407,7 @@ const stats = [
 
 function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
+  const [showRoleModal, setShowRoleModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -427,8 +428,16 @@ function Landing() {
             </span>
           </Link>
           <div style={styles.navRight}>
-            <Link to="/login" style={styles.loginBtn}>Login</Link>
-            <Link to="/register" style={styles.getStartedBtn}>Get Started →</Link>
+           <div style={{display:"flex", gap:"8px"}}>
+  <Link to="/login" style={styles.loginBtn}>Patient</Link>
+  <Link to="/asha-login" style={styles.loginBtn}>ASHA</Link>
+</div>
+            <button
+  onClick={() => setShowRoleModal(true)}
+  style={{ ...styles.getStartedBtn, border: "none", cursor: "pointer" }}
+>
+  Get Started →
+</button>
           </div>
         </div>
       </nav>
@@ -453,12 +462,21 @@ function Landing() {
             multilingual support, and instant hospital locator. Healthcare for everyone, anywhere.
           </p>
           <div style={styles.ctaRow}>
-            <Link to="/register" style={styles.primaryCta}>
-              🚀 Start Free Now
-            </Link>
-            <Link to="/login" style={styles.secondaryCta}>
-              Login to Account
-            </Link>
+            <button
+  onClick={() => setShowRoleModal(true)}
+  style={styles.primaryCta}
+>
+  🚀 Get Started
+</button>
+<div style={{display:"flex", gap:"12px"}}>
+  <Link to="/login" style={styles.secondaryCta}>
+    Patient Login
+  </Link>
+
+  <Link to="/asha-login" style={styles.secondaryCta}>
+    ASHA Login
+  </Link>
+</div>
           </div>
           <div style={styles.emergencyBox}>
             <span style={{ fontSize: '28px' }}>🚨</span>
@@ -533,7 +551,76 @@ function Landing() {
           </div>
         </div>
       </div>
+       
+       {showRoleModal && (
+  <div style={{
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.45)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999
+  }}>
+    <div style={{
+      background: "#fff",
+      borderRadius: "20px",
+      padding: "24px",
+      width: "90%",
+      maxWidth: "380px",
+      textAlign: "center"
+    }}>
+      <h2>Select Registration</h2>
+      <p style={{ color: "#64748b", marginBottom: "20px" }}>
+        Choose your account type
+      </p>
 
+      <Link
+        to="/register"
+        style={{
+          display: "block",
+          background: "#059669",
+          color: "#fff",
+          padding: "14px",
+          borderRadius: "12px",
+          textDecoration: "none",
+          fontWeight: "700",
+          marginBottom: "12px"
+        }}
+      >
+        🧑 Register as Patient
+      </Link>
+
+      <Link
+        to="/asha-register"
+        style={{
+          display: "block",
+          background: "#7c3aed",
+          color: "#fff",
+          padding: "14px",
+          borderRadius: "12px",
+          textDecoration: "none",
+          fontWeight: "700"
+        }}
+      >
+        👩‍⚕️ Register as ASHA Worker
+      </Link>
+
+      <button
+        onClick={() => setShowRoleModal(false)}
+        style={{
+          marginTop: "16px",
+          background: "none",
+          border: "none",
+          color: "#64748b",
+          cursor: "pointer"
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
       {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerLogo}>

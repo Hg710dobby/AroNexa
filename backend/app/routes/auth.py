@@ -26,11 +26,20 @@ async def register(user_data: UserCreate):
         token = create_access_token(data={"sub": user_data.email, "user_id": user_id})
 
         return {
-            "message": "User registered successfully",
-            "user_id": user_id,
-            "access_token": token,
-            "token_type": "bearer"
-        }
+    "message": "User registered successfully",
+    "user_id": user_id,
+    "access_token": token,
+    "token_type": "bearer",
+    "user": {
+        "id": user_id,
+        "full_name": user_data.full_name,
+        "email": user_data.email,
+        "preferred_language": user_data.preferred_language,
+        "village": user_data.village,
+        "district": user_data.district,
+        "role": user_data.role
+    }
+}
 
     except HTTPException:
         raise
